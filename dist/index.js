@@ -18,6 +18,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const genai_1 = require("@google/genai");
+const prompts_1 = require("./prompts");
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
     throw new Error("GEMINI_API_KEY environment variable not set.");
@@ -30,8 +31,12 @@ function main() {
         // import {GoogleGenAI} from '@google/genai';
         const ai = new genai_1.GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
         const response = yield ai.models.generateContentStream({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             contents: "Write a story about a magic backpack.",
+            config: {
+                systemInstruction: (0, prompts_1.getSystemPrompt)(),
+                maxOutputTokens: 4025,
+            },
         });
         let text = "";
         try {

@@ -1,5 +1,6 @@
 require("dotenv").config();
 import { GoogleGenAI } from "@google/genai";
+import { getSystemPrompt } from "./prompts";
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
@@ -14,8 +15,12 @@ async function main() {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
   const response = await ai.models.generateContentStream({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     contents: "Write a story about a magic backpack.",
+    config: {
+      systemInstruction: getSystemPrompt(),
+      maxOutputTokens: 4025,
+    },
   });
   let text = "";
   for await (const chunk of response) {
